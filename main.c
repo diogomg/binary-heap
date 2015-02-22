@@ -5,34 +5,32 @@
 int main(){
     keyType key;
     heap *root = heapCreateRoot();
-    /*heapInsert(root, 1);    puts("");
-    heapInsert(root, 2);    puts("");
-    heapInsert(root, 3);    puts("");
-    heapInsert(root, 4);    puts("");
-    heapInsert(root, 5);    puts("");    puts("");
+    heapInsert(root, 4);
+    heapInsert(root, 2);
+    heapInsert(root, 5);
+    heapInsert(root, 1);
+    heapInsert(root, 1);
 
-    node *n = heapExtractMin(root);free(n);
-    n = heapExtractMin(root);free(n);
-    n = heapExtractMin(root);free(n);
-    n = heapExtractMin(root);free(n);
-    n = heapExtractMin(root);free(n);
-    free(root);*/
-    while(scanf("%d",&key) != EOF){
-        heapInsert(root, key);
-        puts("");
-    }
-    node *n = NULL;
-    int number = 0, i=1;
-    do{
-        n = heapExtractMin(root);
-        if(n->key > number)
-            printf("i: %d\tkey: %d\tprev: %d\n", i, n->key, number);
-        if(n)
-            free(n);
-        else
-            n = NULL;
-        i++;
-    }while(n);
+    node *n = heapExtractMin(root);
+    printf("key: %d\n", n->key);
+    free(n);
+
+    n = heapExtractMin(root);
+    printf("key: %d\n", n->key);
+    free(n);
+
+    n = heapExtractMin(root);
+    printf("key: %d\n", n->key);
+    free(n);
+
+    n = heapExtractMin(root);
+    printf("key: %d\n", n->key);
+    free(n);
+
+    n = heapExtractMin(root);
+    printf("key: %d\n", n->key);
+    free(n);
+
     free(root);
     return 0;
 }

@@ -37,7 +37,6 @@ void heapInsert(heap *root, keyType key){
         root->last_node = new_node;
         heapDecreaseKey(root, new_node, new_node->key);
     }
-    heapPrint(root->root_node);
 }
 
 void heapDecreaseKey(heap *root, node *heap_node, keyType key){
@@ -147,9 +146,10 @@ void heapSwapRight(heap *root, node *heap_node){
     }
     else
         root->root_node = right;
-    right->left = left;
     right->right = heap_node;
-    left->parent = right;
+    right->left = left;
+    if(left)
+	    left->parent = right;
     if(root->last_node == right)
         root->last_node = heap_node;
 }
@@ -186,12 +186,11 @@ node* heapFindParentInsertNodeToAdd(heap *root){
         }
     }
     else if ( N % 2 == 0){
-        aux = root->last_node;
-        while(aux->parent && aux->parent->right != aux)
+        while(aux->parent->right == aux)
             aux = aux->parent;
-        if(!aux->right)
-            return aux;
-        aux = aux->right;
+        if(!aux->parent->right)
+            return aux->parent;
+        aux = aux->parent->right;
         while(aux->left)
             aux = aux->left;
     }
@@ -211,11 +210,9 @@ node* heapFindLastNode(heap *root){
         }
     }
     else if ( N % 2 == 0){
-        while(aux->parent && aux->parent->left != aux)
+        while(aux->parent->left == aux)
             aux = aux->parent;
-        if(!aux->left)
-            return aux;
-        aux = aux->left;
+        aux = aux->parent->left;
         while(aux->right)
             aux = aux->right;
     }
