@@ -8,12 +8,6 @@ compile: *.c
 valgrind: compile clean
 	valgrind --tool=memcheck --leak-check=yes -v ./heap
 
-gerador: gerador.c
-	$(CC) gerador.c -o gerador
-
-rungerador:
-	./gerador
-
 run:
 	./heap
 

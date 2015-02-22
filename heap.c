@@ -25,7 +25,7 @@ void heapInsert(heap *root, keyType key){
         root->count++;
     }
     else{
-        parent = heapFindParentInsertNodeToAdd(root);
+        parent = heapFindParentInsertNode(root);
         if(parent->left){
             parent->right = new_node;
         }
@@ -176,7 +176,7 @@ void heapIncreseKey(heap *root, node *heap_node, keyType key){
     }
 }
 
-node* heapFindParentInsertNodeToAdd(heap *root){
+node* heapFindParentInsertNode(heap *root){
     node *aux = root->last_node;
     unsigned int N = root->count+1;
     if ( (int)(log2(N)) == log2(N) ){
