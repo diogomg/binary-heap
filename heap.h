@@ -1,30 +1,35 @@
+#include <stdlib.h>
+#include <stdio.h>
+#include <math.h>
+
 typedef int keyType;
+
+typedef struct node{
+    keyType key;
+    int vertex;
+    struct node *parent, *left, *right;
+}node;
 
 typedef struct heap{
     unsigned int count;
     struct node *root_node, *last_node;
 }heap;
 
-typedef struct node{
-    keyType key;
-    struct node *parent, *left, *right;
-}node;
-
 heap* heapCreateRoot();
 
 node* heapCreateNode(keyType key);
 
-void heapInsert(heap *root, keyType key);
+node* heapFindParentInsertNode(heap *root);
 
 void heapDecreaseKey(heap *root, node *heap_node, keyType key);
+
+node* heapInsert(heap *root, keyType key);
 
 void heapSwapLeft(heap *root, node *heap_node);
 
 void heapSwapRight(heap *root, node *heap_node);
 
 void heapIncreseKey(heap *root, node *heap_node, keyType key);
-
-node* heapFindParentInsertNode(heap *root);
 
 node* heapFindLastNode(heap *root);
 

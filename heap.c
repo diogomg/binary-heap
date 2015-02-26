@@ -3,6 +3,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#include "heap.h"
+
 heap* heapCreateRoot(){
     heap *new_heap = (heap*)malloc(sizeof(heap));
     new_heap->count = 0;
@@ -17,26 +19,29 @@ node* heapCreateNode(keyType key){
     return new_node;
 }
 
-void heapInsert(heap *root, keyType key){
-    node *new_node, *parent = NULL;
-    new_node = heapCreateNode(key);
-    if(!root->count){
-        root->root_node = root->last_node = new_node;
-        root->count++;
+
+node* heapFindParentInsertNode(heap *root){
+    node *aux = root->last_node;
+    unsigned int N = root->count+1;
+    if ( (int)(log2(N)) == log2(N) ){
+        aux = root->root_node;
+        while (aux->left) {
+            aux = aux->left;
+        }
+    }
+    else if ( N % 2 == 0){
+        while(aux->parent->right == aux)
+            aux = aux->parent;
+        if(!aux->parent->right)
+            return aux->parent;
+        aux = aux->parent->right;
+        while(aux->left)
+            aux = aux->left;
     }
     else{
-        parent = heapFindParentInsertNode(root);
-        if(parent->left){
-            parent->right = new_node;
-        }
-        else{
-            parent->left = new_node;
-        }
-        new_node->parent = parent;
-        root->count++;
-        root->last_node = new_node;
-        heapDecreaseKey(root, new_node, new_node->key);
+        aux = aux->parent;
     }
+    return aux;
 }
 
 void heapDecreaseKey(heap *root, node *heap_node, keyType key){
@@ -94,6 +99,30 @@ void heapDecreaseKey(heap *root, node *heap_node, keyType key){
     }
 }
 
+node* heapInsert(heap *root, keyType key){
+    node *new_node, *parent = NULL;
+    new_node = heapCreateNode(key);
+    if(!root->count){
+        root->root_node = root->last_node = new_node;
+        root->count++;
+    }
+    else{
+        parent = heapFindParentInsertNode(root);
+        if(parent->left){
+            parent->right = new_node;
+        }
+        else{
+            parent->left = new_node;
+        }
+        new_node->parent = parent;
+        root->count++;
+        root->last_node = new_node;
+        heapDecreaseKey(root, new_node, new_node->key);
+    }
+    return new_node;
+}
+
+
 void heapSwapLeft(heap *root, node *heap_node){
     node *parent = heap_node->parent;
     node *left = heap_node->left;
@@ -149,7 +178,7 @@ void heapSwapRight(heap *root, node *heap_node){
     right->right = heap_node;
     right->left = left;
     if(left)
-	    left->parent = right;
+        left->parent = right;
     if(root->last_node == right)
         root->last_node = heap_node;
 }
@@ -174,30 +203,6 @@ void heapIncreseKey(heap *root, node *heap_node, keyType key){
         heapSwapRight(root, heap_node);
         heapIncreseKey(root, heap_node, key);
     }
-}
-
-node* heapFindParentInsertNode(heap *root){
-    node *aux = root->last_node;
-    unsigned int N = root->count+1;
-    if ( (int)(log2(N)) == log2(N) ){
-        aux = root->root_node;
-        while (aux->left) {
-            aux = aux->left;
-        }
-    }
-    else if ( N % 2 == 0){
-        while(aux->parent->right == aux)
-            aux = aux->parent;
-        if(!aux->parent->right)
-            return aux->parent;
-        aux = aux->parent->right;
-        while(aux->left)
-            aux = aux->left;
-    }
-    else{
-        aux = aux->parent;
-    }
-    return aux;
 }
 
 node* heapFindLastNode(heap *root){
@@ -231,6 +236,7 @@ node *heapExtractMin(heap *root){
     }
     if(root->count == 1){
         root->last_node = root->root_node = new_min;
+        new_min->parent = NULL;
         return min_node;
     }
     else{
